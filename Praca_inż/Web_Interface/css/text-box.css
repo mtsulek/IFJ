@@ -1,0 +1,63 @@
+html, body {
+    height: 100vh;
+  }
+  
+  html {
+    box-sizing: border-box;
+  }
+  
+  *, *:after, *:before {
+    box-sizing: inherit;
+  }
+  
+  body {
+    background-image: url("images/background.jpg"); 
+    background-position: center;   
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    
+    /* background: #76b852; /* fallback for old browsers */
+    /* /* background: -webkit-linear-gradient(right, #76b852, #8DC26F);  */
+    /* background: -moz-linear-gradient(right, #76b852, #8DC26F);
+    background: -o-linear-gradient(right, #76b852, #8DC26F);
+    background: linear-gradient(to left, #76b852, #8DC26F);  */
+    font-family: "Roboto", sans-serif;  
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;      
+  }
+  
+  .mixin-text(@font-size: 16, @line-height: 24, @font-size-base: 16, @cap-height: 80) {
+    font-size: (@font-size / @font-size-base * 1em);
+    line-height: (@line-height / @font-size * 1em) ;
+    bottom: (@line-height - (@font-size * @cap-height / 100)) / @font-size / 2 * -1em;
+    position: relative;
+    
+    &:first-child {
+      margin-top: (@line-height - (@font-size * @cap-height / 100)) / @font-size * -1em;
+    }
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  .box {
+    border: 1px solid #eee;
+    // overflow: hidden; // unnecessary
+  }
+  
+  .box-inner {
+    // overflow: hidden; // Warning: clips accents and descendants
+    margin: 24px;
+  }
+  
+  h1 {
+    .mixin-text(36, 50, 16, 80);
+    margin: 0.5em 0;
+  }
+  
+  p {
+    .mixin-text(16, 24);
+    margin: 1em 0;
+  }
+  
