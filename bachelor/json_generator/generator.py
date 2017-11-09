@@ -4,6 +4,8 @@ import random
 import threading
 import sys
 from kafka import KafkaProducer
+import logging
+
 # GLOBAL VARIABLES
 # DETECTOR LIST
 detectors = []
@@ -30,23 +32,26 @@ class myThread (threading.Thread):
 
 def createRandomDetector(count):
     threads = list(range(0,count))
-    for thread in range(0, count):
-        # try:
-        threads[thread] = myThread(thread, "Detector-" + str(thread), thread) #, th_curs
-        detectors.append(threads[thread])
-        # except: 
-        #     print('cant do shit! - create detector')
+    for thread in range(0,count):
+        try:
+            threads[thread] = myThread(thread, "Detector-" + str(thread), thread) #, th_curs
+            detectors.append(threads[thread])
+        except: 
+            print('Error - create detector')
+            raise 
 
 def startStreaming(count):
-    for detector in range (0, count):
+    for detector in range (0,count):
         try:
             detectors[detector].start()
         except: 
-            print('cant do shit! - stream')
+            print('Error - stream')
+            raise
 
     
 
 # MAIN #####################
+logging.basicConfig(level=logging.INFO)
 numberOfDetectors=5
 createRandomDetector(numberOfDetectors)
 startStreaming(numberOfDetectors)
