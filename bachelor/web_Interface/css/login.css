@@ -1,19 +1,21 @@
-/* body {
-    background-color: rgba(109, 164, 241, 0.452);
-}
-
-h3 {
-    color: navy;
-    margin-left: 20px;
-}
-
-th {
-    background-color: #4CAF50;
-    color: white;
-} */
-
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+
+/* @media print{
+    .form input{
+        display:none;
+    }
+} */
+
+table tr:nth-of-type(2n) td {
+  color: #f00;
+}
+
+/* table {
+  
+  color:white;
+} */
 
 .menu {
     margin: 0 auto 100px;    
@@ -39,6 +41,10 @@ th {
   padding: 45px;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+.form input:focus {
+  color: green;
 }
 
 .form input {
@@ -119,7 +125,7 @@ body {
   background-position: center;   
   background-attachment: fixed;
   background-repeat: no-repeat;
-  
+  background-size: cover;
   /* background: #76b852; /* fallback for old browsers */
   /* /* background: -webkit-linear-gradient(right, #76b852, #8DC26F);  */
   /* background: -moz-linear-gradient(right, #76b852, #8DC26F);
