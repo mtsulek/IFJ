@@ -19,12 +19,14 @@ class myThread (threading.Thread):
         self.coordinateLatitude = random.uniform(0,90)
         self.coordinateLongitude = random.uniform(0,180)
         self.coordinateAltitude = random.uniform(-500,4000)
-        self.producer = KafkaProducer(bootstrap_servers='192.245.169.38:9092')
+        self.producer = KafkaProducer(bootstrap_servers='192.245.169.38',client_id="python-test-consumer")
 
     def run(self):
         while True:
             self.data = {"detectorID": self.threadID, "latitude": self.coordinateLatitude, "longitude": self.coordinateLongitude, "altitude": self.coordinateAltitude, "timestamp": time.time()}
             print(str(self.data) + '\n')
+            # self.producer.flush(self.data)
+            self.producer.send('foobar',value=b'dane jakies',key=None)
             time.sleep(random.uniform(0.1,1.5))
 
 def createRandomDetector(count):
