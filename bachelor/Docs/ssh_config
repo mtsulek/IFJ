@@ -1,0 +1,9 @@
+To keep ssh alive
+Host*
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication yes
+    GSSAPIDelegateCredentials no
+    ServerAliveInterval 300
+    TCPKeepAlive yes
+
