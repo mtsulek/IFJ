@@ -51,7 +51,7 @@ def startStreaming(count):
     
 # MAIN #####################
 logging.basicConfig(level=logging.INFO)
-numberOfDetectors=1
+numberOfDetectors=50
 createRandomDetector(numberOfDetectors)
 startStreaming(numberOfDetectors)
 
