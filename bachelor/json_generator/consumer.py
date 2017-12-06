@@ -13,7 +13,7 @@ class myConsumer (threading.Thread):
 
     def run(self):
         consumer = KafkaConsumer(bootstrap_servers='54.229.196.207:9092',auto_offset_reset='earliest',consumer_timeout_ms=1000)
-        consumer.subscribe(['mateuszTest2'])
+        consumer.subscribe(['cosmicWatchTest'])
         while not self.stop_event.is_set():
             for message in consumer:
                 print(message)

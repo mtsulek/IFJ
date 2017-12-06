@@ -21,14 +21,14 @@ class myThread (threading.Thread):
         self.coordinateLatitude = random.uniform(0,90)
         self.coordinateLongitude = random.uniform(0,180)
         self.coordinateAltitude = random.uniform(-500,4000)
-        self.producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'), bootstrap_servers='54.229.196.207:9092',api_version=(0,10))
+        self.producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'), bootstrap_servers='192.245.169.38:9092',api_version=(0,10))
 
     def run(self):
         while True:
             self.data = {"detectorID": self.threadID, "latitude": self.coordinateLatitude, "longitude": self.coordinateLongitude, "altitude": self.coordinateAltitude, "timestamp": time.time()}
             print(str(self.data) + '\n')
             self.producer.send('mateuszTest2', value=self.data)
-            time.sleep(random.uniform(0.1,1.5))
+            # time.sleep(random.uniform(0.1,1.5))
 
 def createRandomDetector(count):
     threads = list(range(0,count))
