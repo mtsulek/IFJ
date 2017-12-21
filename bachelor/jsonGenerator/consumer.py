@@ -12,8 +12,8 @@ class myConsumer (threading.Thread):
         self.stop_event = threading.Event()
 
     def run(self):
-        consumer = KafkaConsumer(bootstrap_servers='54.229.196.207:9092',auto_offset_reset='earliest',consumer_timeout_ms=1000)
-        consumer.subscribe(['cosmicWatchTest'])
+        consumer = KafkaConsumer(bootstrap_servers='10.10.100.94:9092',auto_offset_reset='earliest',consumer_timeout_ms=1000)
+        consumer.subscribe(['mateuszTest2'])
         while not self.stop_event.is_set():
             for message in consumer:
                 print(message)
