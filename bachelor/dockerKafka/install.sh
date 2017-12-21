@@ -1,7 +1,9 @@
 #!/bin/sh
 #Get elements
-bash ./myScripts/getConfluent.sh
+bash ./confluent/getConfluent.sh
+bash ./grafana/getGrafana.sh
 bash ./wurstmeister/getWurstMeister.sh
+bash ./ksql/getKSQL.sh
 sudo apt-get install docker-compose -y
 sudo apt-get install docker.io -y
 rm ~/kafkaStreams/wurstmeister/kafka-docker/docker-compose.yml

@@ -1,0 +1,8 @@
+Install Confluent Kafka for KSQL, Wurstmeister Kafka cluster in docker and Grafana. 
+This will be broker for data from cosmic ray detector with real time analysis. 
+
+To do:
+	- Should i use grafana in docker? 
+	- Make KSQL work
+	- Automatic ip recognise for docker compose
+	- run Grafana with KSQL

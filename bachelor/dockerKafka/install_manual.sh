@@ -1,6 +1,6 @@
 #!/bin/sh
 #Get elements
-bash ./confluent/getConfluentKafka.sh
+bash ./confluent/getConfluentManually.sh
 bash ./wurstmeister/getWurstMeister.sh
 sudo apt-get install docker-compose -y
 sudo apt-get install docker.io -y
