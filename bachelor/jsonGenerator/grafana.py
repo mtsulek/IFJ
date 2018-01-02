@@ -5,6 +5,15 @@ import threading
 import sys
 from kafka import KafkaConsumer
 import logging
+from influxdb import InfluxDBClient
+
+# InfluxDB connections settings
+host = 'localhost'
+port = 8086
+user = 'root'
+password = 'root'
+dbname = 'mydb'
+myclient = InfluxDBClient(host, port, user, password, dbname)
 
 class myConsumer (threading.Thread):
     def __init__(self):

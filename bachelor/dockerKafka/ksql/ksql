@@ -1,0 +1,13 @@
+
+
+
+
+
+apt-get install elasticsearch -y
+service elasticsearch start
+apt-get install grafana -y
+
+
+CREATE STREAM static_detecor1 (viewtime bigint, detectorID varchar) WITH (KEY='detectorID', kafka_topic='mateuszTest2', value_format='JSON');
+CREATE TABLE event (registertime bigint, timestamp varchar, latitude varchar, detectorID varchar, longitude varchar, altitude varchar) WITH (KEY='detectorID', kafka_topic='mateuszTest2', value_format='JSON');
+SELECT timestamp FROM static_detecor1;
