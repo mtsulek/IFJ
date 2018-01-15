@@ -21,7 +21,7 @@ class myThread (threading.Thread):
         self.coordinateLatitude = random.uniform(0,90)
         self.coordinateLongitude = random.uniform(0,180)
         self.coordinateAltitude = random.uniform(-500,4000)
-        self.producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'), bootstrap_servers='10.10.100.94:9092',api_version=(0,10))
+        self.producer = KafkaProducer(value_serializer=lambda v: json.dumps(v).encode('utf-8'), bootstrap_servers='127.0.0.1:29092',api_version=(0,10))
 
     def run(self):
         while True:
