@@ -54,20 +54,79 @@ CREATE TABLE countPM AS \
 
 =======================================================
 					DZIAŁA?
-CREATE STREAM detectorstream4 \
-  (dupa varchar, \
-   timestamp BIGINT, \
+CREATE STREAM OST \
+  (timestamp BIGINT, \
    detectorID VARCHAR) \
   WITH (kafka_topic='staticDetectors', \
         value_format='JSON', \
         key='detectorID');
 
-CREATE TABLE TEST AS \
+CREATE TABLE onemintest AS \
   SELECT detectorID, \
-         count(*) \
-  FROM detectorstream4 \
+         count(*) AS event\
+  FROM OST \
   WINDOW TUMBLING (SIZE 1 MINUTE) \
   GROUP BY detectorID;
+
+OUTPUT:
+
+select * from onemintest;
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 1
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 19
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 28
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 35
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 44
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 53
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 63
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 74
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 83
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 95
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 103
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 108
+1516044360000 | 0 : Window{start=1516044360000 end=-} | 0 | 2
+
+python3.5 eventConsumer.py -t ONEMINTEST
+{'DETECTORID': '0', 'EVENT': 9} 474 0
+{'DETECTORID': '0', 'EVENT': 18} 475 0
+{'DETECTORID': '0', 'EVENT': 25} 476 0
+{'DETECTORID': '0', 'EVENT': 34} 477 0
+{'DETECTORID': '0', 'EVENT': 43} 478 0
+{'DETECTORID': '0', 'EVENT': 51} 479 0
+{'DETECTORID': '0', 'EVENT': 59} 480 0
+{'DETECTORID': '0', 'EVENT': 67} 481 0
+{'DETECTORID': '0', 'EVENT': 77} 482 0
+{'DETECTORID': '0', 'EVENT': 85} 483 0
+{'DETECTORID': '0', 'EVENT': 94} 484 0
+{'DETECTORID': '0', 'EVENT': 102} 485 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE maxrow AS SELECT detectorID, max(event) FROM onemintest WINDOW TUMBLING(size 1 minute) GROUP BY detectorID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ======================================================
 
 CREATE TABLE 1mintable AS \
@@ -76,6 +135,34 @@ CREATE TABLE 1mintable AS \
   FROM detectorstream4 \
   WINDOW TUMBLING (SIZE 1 MINUTE) \
   GROUP BY detectorID;
+ ===========
+TESTTTT
+=======
+
+CREATE STREAM DSTEAM \
+  (timestamp BIGINT, \
+   detectorID VARCHAR) \
+  WITH (kafka_topic='staticDetectors', \
+        value_format='JSON', \
+        key='detectorID');
+
+
+SET autocreate=true;
+
+
+
+
+
+INSERT INTO `onemin` \
+SELECT detectorID, COUNT(*) AS `count` FROM `detectorstream4`GROUP BY tumble(1, m);
+
+
+
+SELECT detectorID, COUNT(*) AS `count` FROM `staticDetectors` GROUP BY tumble(detectorID);
+
+
+
+
 
 
 
