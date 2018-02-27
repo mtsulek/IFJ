@@ -1,13 +1,169 @@
+CREATE STREAM staticDetectorStream (timestamp double, latitude double, detectorID double, longitude double, altitude double) WITH (KEY='detectorID', kafka_topic='staticDetectors', value_format='JSON');
+
+CREATE TABLE event62 AS SELECT timestamp, count(*) from staticDetectorStream WINDOW TUMBLING (SIZE 5 SECONDS) group by timestamp;
+
+Select * from STATIC_DETECOR1;
+
+docker-compose exec ksql-cli ksql-cli local --bootstrap-server kafka:29092
+
+https://stackoverflow.com/questions/31677563/connection-refused-error-on-elastic-search TO OPEN ELASTICSEARCH
+
+
+CREATE STREAM staticDetectorStream (dupa double) WITH (KEY='detectorID', kafka_topic='staticDetectors', value_format='JSON');
+
+
+
+CREATE STREAM dupastream(dupa VARCHAR) WITH (VALUE_FORMAT='JSON', KAFKA_TOPIC='staticDetectors');
+CREATE TABLE dupatable(dupa varchar) with (KEY='timestamp', VALUE_FORMAT='JSON', KAFKA_TOPIC='dupastream');
+
+SELECT rowtime ,SUM(COUNT(DUPA)) from dupatable window session (10 second) group by timestamp;
 
 
 
 
 
-apt-get install elasticsearch -y
-service elasticsearch start
-apt-get install grafana -y
+
+CREATE STREAM detectorstream3 \
+  (dupa varchar, \
+   timestamp BIGINT, \
+   detectorID VARCHAR) \
+  WITH (kafka_topic='staticDetectors', \
+        value_format='JSON', \
+        key='detectorID', \
+	timestamp='timestamp');
 
 
-CREATE STREAM static_detecor1 (viewtime bigint, detectorID varchar) WITH (KEY='detectorID', kafka_topic='mateuszTest2', value_format='JSON');
-CREATE TABLE event (registertime bigint, timestamp varchar, latitude varchar, detectorID varchar, longitude varchar, altitude varchar) WITH (KEY='detectorID', kafka_topic='mateuszTest2', value_format='JSON');
-SELECT timestamp FROM static_detecor1;
+
+CREATE TABLE detectors \
+  (dupa varchar, \
+   latitude DOULBE, \
+   longitude DOUBLE, \
+   altitude DOUBLE, \
+   detectorID VARCHAR) \
+  WITH (kafka_topic='staticDetectors', \
+        value_format='JSON');
+
+CREATE TABLE countPM AS \
+  SELECT detectorID, \
+         count(*) \
+  FROM detectorstream2 \
+  WINDOW TUMBLING (SIZE 1 MINUTE) \
+  GROUP BY detectorID;
+
+
+
+=======================================================
+					DZIAŁA?
+CREATE STREAM OST \
+  (timestamp BIGINT, \
+   detectorID VARCHAR) \
+  WITH (kafka_topic='staticDetectors', \
+        value_format='JSON', \
+        key='detectorID');
+
+CREATE TABLE onemintest AS \
+  SELECT detectorID, \
+         count(*) AS event\
+  FROM OST \
+  WINDOW TUMBLING (SIZE 1 MINUTE) \
+  GROUP BY detectorID;
+
+OUTPUT:
+
+select * from onemintest;
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 1
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 19
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 28
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 35
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 44
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 53
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 63
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 74
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 83
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 95
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 103
+1516044300000 | 0 : Window{start=1516044300000 end=-} | 0 | 108
+1516044360000 | 0 : Window{start=1516044360000 end=-} | 0 | 2
+
+python3.5 eventConsumer.py -t ONEMINTEST
+{'DETECTORID': '0', 'EVENT': 9} 474 0
+{'DETECTORID': '0', 'EVENT': 18} 475 0
+{'DETECTORID': '0', 'EVENT': 25} 476 0
+{'DETECTORID': '0', 'EVENT': 34} 477 0
+{'DETECTORID': '0', 'EVENT': 43} 478 0
+{'DETECTORID': '0', 'EVENT': 51} 479 0
+{'DETECTORID': '0', 'EVENT': 59} 480 0
+{'DETECTORID': '0', 'EVENT': 67} 481 0
+{'DETECTORID': '0', 'EVENT': 77} 482 0
+{'DETECTORID': '0', 'EVENT': 85} 483 0
+{'DETECTORID': '0', 'EVENT': 94} 484 0
+{'DETECTORID': '0', 'EVENT': 102} 485 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE TABLE maxrow AS SELECT detectorID, max(event) FROM onemintest WINDOW TUMBLING(size 1 minute) GROUP BY detectorID;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+======================================================
+
+CREATE TABLE 1mintable AS \
+  SELECT detectorID, \
+         count(*) as 1mincount \
+  FROM detectorstream4 \
+  WINDOW TUMBLING (SIZE 1 MINUTE) \
+  GROUP BY detectorID;
+ ===========
+TESTTTT
+=======
+
+CREATE STREAM DSTEAM \
+  (timestamp BIGINT, \
+   detectorID VARCHAR) \
+  WITH (kafka_topic='staticDetectors', \
+        value_format='JSON', \
+        key='detectorID');
+
+
+SET autocreate=true;
+
+
+
+
+
+INSERT INTO `onemin` \
+SELECT detectorID, COUNT(*) AS `count` FROM `detectorstream4`GROUP BY tumble(1, m);
+
+
+
+SELECT detectorID, COUNT(*) AS `count` FROM `staticDetectors` GROUP BY tumble(detectorID);
+
+
+
+
+
+
+
+

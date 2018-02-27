@@ -8,23 +8,15 @@ import logging
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-t","--topic", help="name of kafka topic", type=str)
-parser.add_argument("-s","--server", help="Kafka server adress and port", type=str)
+parser.add_argument("-t","--topic", help="name of ksql topic", type=str)
 args = parser.parse_args()
 
 if args.topic:
     print("\tSelected "+ str(args.topic) + " kafka topic")
     topic = args.topic
 else:
-    topic = "staticDetectors"
+    topic = "event60"
     print("\tDefault topic name " + str(topic))
-
-if args.server:
-    print("\tSelected "+ str(args.server) + " serwer ip and port")
-    server = args.server
-else:
-    server = "127.0.0.1:9092"
-    print("\tlistening on " + str(server))
 
 class myConsumer (threading.Thread):
     def __init__(self):
@@ -32,13 +24,14 @@ class myConsumer (threading.Thread):
         self.stop_event = threading.Event()
 
     def run(self):
-        consumer = KafkaConsumer(bootstrap_servers=server, auto_offset_reset='earliest', consumer_timeout_ms=1000, value_deserializer=lambda m: json.loads(m.decode('ascii')))
+        consumer = KafkaConsumer(max_poll_records=1,bootstrap_servers='10.10.100.94:9092',auto_offset_reset='earliest',consumer_timeout_ms=1000, value_deserializer=lambda m: json.loads(m.decode('ascii')))
         consumer.subscribe([topic])
         while not self.stop_event.is_set():
             for message in consumer:
-                print(message.value)
+                print(message.value, message.offset, message.partition)
                 if self.stop_event.is_set():
                     break
+
 
 myConsumer().start()
 
