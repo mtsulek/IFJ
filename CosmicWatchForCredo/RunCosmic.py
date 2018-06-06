@@ -1,6 +1,7 @@
 import json
 import requests
 import getpass
+# from PyQt5 import QtCore, QtGui, QtWidgets
 
 # APPLICATION SETUP
 configFileName = '.CosmicConfig.json'
@@ -11,6 +12,7 @@ device_type = "Cosmic Watch"
 device_id = ""
 
 def IfConfigExist():
+    """Check if configFile exists. If exests return data from file, if not returns false"""
     try:
         with open(configFileName) as configFile:
             _data_ = json.load(configFile)
@@ -19,7 +21,7 @@ def IfConfigExist():
         return False
 
 def InitiateCosmicWatch():
-    """Check if config file exist, if not: register, else get parameters from config file"""
+    """Guide thruu registering process, returns JSON template for http request"""
     print("No config file detected!")
     print("Register your detector:")
     print("email:")
@@ -49,7 +51,14 @@ def InitiateCosmicWatch():
     return template(email, username, displayName, password, team, language, device_id, device_type, device_model, system_version, app_version)
 
 def LoginToServer():
-    return 0
+    """Asks for username and login and returns JSON template with data for http request"""
+    print("To start data streaming, please login:")
+    print("username:")
+    username = input()
+    password = getpass.getpass('password:')
+    template = JsonTemplate("Login")
+    return template(username, password, device_id, device_type, device_model, system_version, app_version)
+
 def JsonTemplate(whichTemplate):
     """get one of parameter: Register, Login, SendData and return template as a function"""
     def Register(email, username, displayName, password, team, language, device_id, device_type, device_model, system_version, app_version):
@@ -113,7 +122,7 @@ def HttpRequest(IP, whichRequest):
         """Http Login request to server"""
         _adress = str(IP) + "/api/v2/user/login"
         r = requests.post(_adress, dataJSON)
-        return(r.status_code, r.reason, r.content)
+        return([r.status_code, r.reason, r.content])
     def SendDataRequest(dataJSON):
         """Http SendData request to server"""
         _adress = str(IP) + "/api/v2/detection"
@@ -127,22 +136,25 @@ def HttpRequest(IP, whichRequest):
     elif whichRequest == "SendData":
         return SendDataRequest
 
-
-
-
-
-
+# Initiation of Detector
 config = IfConfigExist()
 if config == False:
     registrationTemplate = InitiateCosmicWatch()
-    request = HttpRequest("http://bugs.python.org", "Register")
-    result = request(registrationTemplate)
+    registerRequest = HttpRequest("http://bugs.python.org", "Register")
+    registerResult = registerRequest(registrationTemplate)
     configFile = open(configFileName,'w')
     configFile.write(json.dumps(registrationTemplate))
     configFile.close
-    print(result)
-print(config["team"])
+    config = IfConfigExist()
+    print(registerResult)
 
+# Loggin into server
+loginTemplate = LoginToServer()
+loginRequest = HttpRequest("http://bugs.python.org", "Login")
+loginResult = loginRequest(loginTemplate)
+loginContent = json.load(loginResult[2])
+# Autentication Token!!!
+AuthenticationToken = loginContent['token']
 
 
 # registrationJSON = template(email, username, displayName, password, team, language, device_id, device_type, device_model, system_version, app_version)
