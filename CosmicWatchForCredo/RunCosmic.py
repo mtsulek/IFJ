@@ -7,9 +7,9 @@ import getpass
 configFileName = '.CosmicConfig.json'
 app_version = 0.01
 system_version = "Ubuntu 16.04"
-device_model = "Cosmic Watch"
-device_type = "Cosmic Watch"
-device_id = ""
+device_model = "Xiaomi Air 13"
+device_type = "PC_CosmicWatch"
+device_id = "CosmicWatchTest000000000000001"
 
 def IfConfigExist():
     """Check if configFile exists. If exests return data from file, if not returns false"""
@@ -115,9 +115,9 @@ def HttpRequest(IP, whichRequest):
     """choose IP adress of server and select type of request: Register, Login, SendData."""
     def RegisterRequest(dataJSON):
         """Http Register request to server"""
-        _adress = str(IP) + "/api/v2/detection"
-        r = requests.post(_adress, dataJSON)
-        return(r.status_code, r.reason)
+        _adress = str(IP) + "/api/v2/user/register"
+        r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'})
+        return(r.status_code, r.reason, r, r.content)
     def LoginRequest(dataJSON):
         """Http Login request to server"""
         _adress = str(IP) + "/api/v2/user/login"
@@ -140,7 +140,7 @@ def HttpRequest(IP, whichRequest):
 config = IfConfigExist()
 if config == False:
     registrationTemplate = InitiateCosmicWatch()
-    registerRequest = HttpRequest("http://bugs.python.org", "Register")
+    registerRequest = HttpRequest("https://api.credo.science", "Register")
     registerResult = registerRequest(registrationTemplate)
     configFile = open(configFileName,'w')
     configFile.write(json.dumps(registrationTemplate))
@@ -149,12 +149,12 @@ if config == False:
     print(registerResult)
 
 # Loggin into server
-loginTemplate = LoginToServer()
-loginRequest = HttpRequest("http://bugs.python.org", "Login")
-loginResult = loginRequest(loginTemplate)
-loginContent = json.load(loginResult[2])
-# Autentication Token!!!
-AuthenticationToken = loginContent['token']
+# loginTemplate = LoginToServer()
+# loginRequest = HttpRequest("https://api.credo.science", "Login")
+# loginResult = loginRequest(loginTemplate)
+# loginContent = json.load(loginResult[2])
+# # Autentication Token!!!
+# AuthenticationToken = loginContent['token']
 
 
 # registrationJSON = template(email, username, displayName, password, team, language, device_id, device_type, device_model, system_version, app_version)
