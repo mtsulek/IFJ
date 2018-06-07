@@ -1,24 +1,34 @@
 import json
 import requests
 import getpass
-# from PyQt5 import QtCore, QtGui, QtWidgets
+import os
+import platform
 
 # APPLICATION SETUP
 configFileName = '.CosmicConfig.json'
 app_version = 0.01
-system_version = "Ubuntu 16.04"
+distro, version, kernel = platform.linux_distribution()
+system_version = platform.system() + platform.release() + " " + distro + version
 device_model = "Xiaomi Air 13"
 device_type = "PC_CosmicWatch"
 device_id = "CosmicWatchTest000000000000001"
 
+print(system_version)
+def errors(statusCode, content):
+    if statusCode == 400 or statusCode == 500:
+        print(f"There is {statusCode} status Code from serwer: \"{json.loads(content)['message']}\"")
+        return True
+    else:
+        return False
+
 def IfConfigExist():
     """Check if configFile exists. If exests return data from file, if not returns false"""
-    try:
-        with open(configFileName) as configFile:
-            _data_ = json.load(configFile)
-            return(_data_)
-    except:
-        return False
+    # try:
+    with open(configFileName) as configFile:
+        _data_ = json.load(configFile)
+        return(_data_)
+    # except:
+    return False
 
 def InitiateCosmicWatch():
     """Guide thruu registering process, returns JSON template for http request"""
@@ -117,12 +127,12 @@ def HttpRequest(IP, whichRequest):
         """Http Register request to server"""
         _adress = str(IP) + "/api/v2/user/register"
         r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'})
-        return(r.status_code, r.reason, r, r.content)
+        return(r.status_code, r.reason, r.content)
     def LoginRequest(dataJSON):
         """Http Login request to server"""
         _adress = str(IP) + "/api/v2/user/login"
-        r = requests.post(_adress, dataJSON)
-        return([r.status_code, r.reason, r.content])
+        r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'})
+        return(r.status_code, r.reason, r.content)
     def SendDataRequest(dataJSON):
         """Http SendData request to server"""
         _adress = str(IP) + "/api/v2/detection"
@@ -136,28 +146,28 @@ def HttpRequest(IP, whichRequest):
     elif whichRequest == "SendData":
         return SendDataRequest
 
-# Initiation of Detector
+# Initialization of Detector
 config = IfConfigExist()
 if config == False:
     registrationTemplate = InitiateCosmicWatch()
     registerRequest = HttpRequest("https://api.credo.science", "Register")
     registerResult = registerRequest(registrationTemplate)
-    configFile = open(configFileName,'w')
-    configFile.write(json.dumps(registrationTemplate))
-    configFile.close
-    config = IfConfigExist()
-    print(registerResult)
+    if errors(registerResult[0], registerResult[2]) == False:
+        configFile = open(configFileName,'w')
+        configFile.write(json.dumps(registrationTemplate))
+        configFile.close
+        config = IfConfigExist()
+    else:
+        exit
 
 # Loggin into server
-# loginTemplate = LoginToServer()
-# loginRequest = HttpRequest("https://api.credo.science", "Login")
-# loginResult = loginRequest(loginTemplate)
-# loginContent = json.load(loginResult[2])
-# # Autentication Token!!!
-# AuthenticationToken = loginContent['token']
+loginTemplate = LoginToServer()
+loginRequest = HttpRequest("https://api.credo.science", "Login")
+loginResult = loginRequest(loginTemplate)
+if errors(loginResult[0], loginResult[2]) == False:
+    pass
+else:
+    exit
+AuthenticationToken = json.loads(loginResult[2])['token']
 
-
-# registrationJSON = template(email, username, displayName, password, team, language, device_id, device_type, device_model, system_version, app_version)
-# request = HttpRequest("http://bugs.python.org", "Register")
-# result = request(registrationJSON)
-# print(result)
+# Generate data json

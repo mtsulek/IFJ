@@ -1,1 +1,13 @@
-{"email": "mt.sulek@gmail.com", "username": "mateusz", "display_name": "mateusz", "password": "placzabaw123", "team": "PK", "language": "pl", "device_id": "CosmicWatchTest000000000000001", "device_type": "PC_CosmicWatch", "device_model": "Xiaomi Air 13", "system_version": "Ubuntu 16.04", "app_version": 0.01}
+{
+    "email": "mt.sulek@gmail.com",
+    "username": "mtsulek",
+    "display_name": "mtsulek",
+    "password": "plac123",
+    "team": "PK",
+    "language": "pl",
+    "device_id": "CosmicWatchTest000000000000001",
+    "device_type": "PC_CosmicWatch",
+    "device_model": "Xiaomi Air 13",
+    "system_version": "Linux4.13.0-41-generic Ubuntu16.04",
+    "app_version": 0.01
+}
