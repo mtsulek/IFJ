@@ -121,9 +121,8 @@ def JsonTemplate(whichTemplate):
     def SendData(dataJsonList, device_id, device_type, device_model, system_version, app_version):
         """Return Data JSON template"""
         template_ = {
-        "detections": [
-                dataJsonList
-            ],
+        "detections": 
+                dataJsonList,
             "device_id": device_id,
             "device_type": device_type,
             "device_model": device_model,
@@ -157,7 +156,7 @@ def HttpRequest(IP, whichRequest):
         header = {'Content-Type': 'application/json', 'Authorization': 'Token {}'.format(token)}
         print(header)
         r = requests.post(_adress, json=dataJSON, verify=False, headers=header)
-        return(r.status_code, r.reason)
+        return(r.status_code, r.reason, r.content)
 
     if whichRequest == "Register":
         return RegisterRequest
@@ -197,8 +196,10 @@ AuthenticationToken = json.loads(loginResult[2])['token']
 
 # Generate data json
 dataTemplate = JsonTemplate("Data")
-dataFrameTemplate = MakeDataFrame(1, 210.73, 1, 1, 50.0922, 19.9148, "gps", int(time.time()), 1)  #DATA FRAME TO SEND
-dataContent = dataTemplate(dataFrameTemplate, device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
+dataFrameTemplate = MakeDataFrame(1, 210.73, 0, 0, 50.0922, 19.9148, "gps", int(time.time()*1000), 0)  #DATA FRAME TO SEND
+dataFrameTemplate2 = MakeDataFrame(1, 210.73, 0, 1, 50.0922, 19.9148, "gps", int(time.time()*1000), 0)  #DATA FRAME TO SEND
+
+dataContent = dataTemplate([dataFrameTemplate, dataFrameTemplate2], device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
 
 # Send Data
 sendRequest = HttpRequest("https://api.credo.science", "Data")
