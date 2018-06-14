@@ -184,8 +184,6 @@ def HttpRequest(IP, whichRequest):
 
 """Main"""
 # Initialization of Detector
-print(generateUniqueID(device_model, device_type, "user_name"))
-
 config = IfConfigExist()
 if config == False:
     registrationTemplate = InitiateCosmicWatch()

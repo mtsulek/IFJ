@@ -1,0 +1,5 @@
+This is prototype of Aplication for Credo Desktop Detektor.
+
+Required:
+	python 3.6+
+	python3-serial
