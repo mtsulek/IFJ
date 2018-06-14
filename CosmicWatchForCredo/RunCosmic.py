@@ -4,7 +4,9 @@ import getpass
 import os
 import platform
 import time
-# COSMIC WATCH
+import hashlib
+import random
+# COSMIC WATCH LIBS
 import serial 
 import time
 import glob
@@ -13,19 +15,23 @@ import signal
 import json
 from datetime import datetime
 from multiprocessing import Process
-from kafka import KafkaProducer
 import random
 import logging
 
 # APPLICATION SETUP
+"""Constant App parameters"""
 configFileName = '.CosmicConfig.json'
 app_version = 0.01
 distro, version, kernel = platform.linux_distribution()
 system_version = platform.system() + platform.release() + " " + distro + version
-device_model = "Xiaomi Air 13"
-device_type = "PC_CosmicWatch"
-device_id = "CosmicWatchTest000000000000001"
+device_model = "Desktop"
+device_type = "CosmicWatch"
 
+"""Functions"""
+def generateUniqueID(device_model, device_type, user_name):
+    id_ = hashlib.md5(bytes(f"{device_model}{device_type}{user_name}", 'utf-8')).hexdigest()
+    id_ = str(id_) + str(int(time.time()))
+    return id_
 
 def errors(statusCode, content):
     """Chcecks for 400 and 500 status code from server"""
@@ -69,7 +75,8 @@ def InitiateCosmicWatch():
     language = input()
 
     template = JsonTemplate("Register")
-    return template(email, username, displayName, password, team, language, device_id, device_type, device_model, system_version, app_version)
+    uniqueKey = generateUniqueID(device_model, device_type, user_name)
+    return template(email, username, displayName, password, team, language, uniqueKey, device_type, device_model, system_version, app_version)
 
 def LoginToServer():
     """Asks for username and login and returns JSON template with data for http request"""
@@ -177,7 +184,10 @@ def HttpRequest(IP, whichRequest):
     elif whichRequest == "Data":
         return SendDataRequest
 
+"""Main"""
 # Initialization of Detector
+print(generateUniqueID(device_model, device_type, "user_name"))
+
 config = IfConfigExist()
 if config == False:
     registrationTemplate = InitiateCosmicWatch()
@@ -185,11 +195,16 @@ if config == False:
     registerResult = registerRequest(registrationTemplate)
     if errors(registerResult[0], registerResult[2]) == False:
         configFile = open(configFileName,'w')
+        for element in registrationTemplate: 
+            del element['password']
         configFile.write(json.dumps(registrationTemplate))
         configFile.close
         config = IfConfigExist()
     else:
         exit
+else:
+    file_ = open(configFileName).read()
+    device_id = json.loads(file_)['device_id']
 
 # Loggin into server
 loginTemplate = LoginToServer()
@@ -208,20 +223,10 @@ AuthenticationToken = json.loads(loginResult[2])['token']
 
 # Generate data json
 dataTemplate = JsonTemplate("Data")
-# dataFrameTemplate = MakeDataFrame(1, 210.73, 0, 0, 50.0922, 19.9148, "gps", int(time.time()*1000), 0)  #DATA FRAME TO SEND
-# dataContent = dataTemplate([dataFrameTemplate], device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
 
-# # Send Data
+# Send Data
 sendRequest = HttpRequest("https://api.credo.science", "Data")
-# sendResult = sendRequest(dataContent, AuthenticationToken)
 
-# print(dataContent)
-# if errors(loginResult[0], loginResult[2]) == False:
-#     pass
-# else:
-#     exit
-
-# print(sendResult)
 
 
 
@@ -282,11 +287,15 @@ if len(port_list) > 1:
 else :
     ArduinoPort = 1
 print("The selected port is:")
-print(str(port_list[int(ArduinoPort)-1])+'\n')
+try:
+    print(str(port_list[int(ArduinoPort)-1])+'\n')
+except:
+    print("No device connected!")
+    sys.exit() 
 # fname = input("Enter file name (eg. save_file.txt):")
-fname = "dupa.txt"
+fname = "data.dat"
 # id = input("Enter device ID:")
-id = "1"
+id = device_id
 print("Taking data ...")
 print("Press ctl+c to terminate process")
 
