@@ -88,7 +88,6 @@ def LoginToServer():
     return template(username, password, device_id, device_type, device_model, system_version, app_version)
 
 """Data Templates"""
-
 def MakeDataFrame(accuracy, altitude, height, id_, latitude, longitude, provider ,timestamp, width):
     """Generate JSON data frame of detector event"""
     frame = {
@@ -173,7 +172,6 @@ def HttpRequest(IP, whichRequest):
         """Http SendData request to server"""
         _adress = str(IP) + "/api/v2/detection"
         header = {'Content-Type': 'application/json', 'Authorization': 'Token {}'.format(token)}
-        print(header)
         r = requests.post(_adress, json=dataJSON, verify=False, headers=header)
         return(r.status_code, r.reason, r.content)
 
@@ -215,11 +213,6 @@ if errors(loginResult[0], loginResult[2]) == False:
 else:
     exit
 AuthenticationToken = json.loads(loginResult[2])['token']
-
-
-
-
-
 
 # Generate data json
 dataTemplate = JsonTemplate("Data")
@@ -265,7 +258,6 @@ def serial_ports():
     return result
 
 #if __name__ == '__main__':
-    
 #This file is used to save real-time data from the detector. You will have to change the variable ComPort to the 
 #   name of the USB port it is plugged into. If the Arduino is not recognized by your computer, make sure you have
 #   installed the drivers for the Arduino.
@@ -322,12 +314,12 @@ while True:
     #     file.write("### Device ID: "+str(id)+"\n")
     #     file.write("######################################################################\n")
     # file.write(str(datetime.now())+" "+data)
-    dataFrameTemplate = MakeDataFrame(1, 210.73, 0, counter, 50.0922, 19.9148, "gps", int(time.time()*1000), 0)  #DATA FRAME TO SEND
+    dataFrameTemplate = MakeDataFrame(1, 210.73, 0, counter, 50.0922, 19.9148, "ip", int(time.time()*1000), 0)  #DATA FRAME TO SEND
     dataContent = dataTemplate([dataFrameTemplate], device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
     counter +=1
     sendResult = sendRequest(dataContent, AuthenticationToken)
 
-    print(dataContent)
+    # print(dataContent)
     if errors(loginResult[0], loginResult[2]) == False:
         pass
     else:
