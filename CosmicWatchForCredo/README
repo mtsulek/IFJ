@@ -5,9 +5,9 @@ Required:
 	python3-serial
 
 To do list: 
-	[] in case of no internet connection save data in local file
-	[] visualization of data
-		- 1 min
-		- 1 hour
-		- 1 day
-		- 1 week
+	- [ ] in case of no internet connection save data in local file
+	- [ ] visualization of data
+		* 1 min
+		* 1 hour
+		* 1 day
+		* 1 week
