@@ -21,7 +21,7 @@ import logging
 # APPLICATION SETUP
 """Constant App parameters"""
 configFileName = '.CosmicConfig.json'
-app_version = 0.01
+app_version = 0.02
 distro, version, kernel = platform.linux_distribution()
 system_version = platform.system() + platform.release() + " " + distro + version
 device_model = "Desktop"
@@ -43,24 +43,23 @@ def errors(statusCode, content):
 
 def IfConfigExist():
     """Check if configFile exists. If exests return data from file, if not returns false"""
-    # try:
-    with open(configFileName) as configFile:
-        _data_ = json.load(configFile)
-        return(_data_)
-    # except:
-    return False
+    try:
+        with open(configFileName) as configFile:
+            _data_ = json.load(configFile)
+            return(_data_)
+    except:
+        return False
 
 def InitiateCosmicWatch():
     """Guide thruu registering process, returns JSON template for http request"""
     print("No config file detected!")
     print("Register your detector:")
-
     print("email:")
     email = input()
     print("username:")
-    username = input()
+    user_name = input()
     print("displayName:")
-    displayName = input()
+    display_Name = input()
 
     password = getpass.getpass('password:')
     passwordRepeat = getpass.getpass('repeat your password:')
@@ -76,7 +75,7 @@ def InitiateCosmicWatch():
 
     template = JsonTemplate("Register")
     uniqueKey = generateUniqueID(device_model, device_type, user_name)
-    return template(email, username, displayName, password, team, language, uniqueKey, device_type, device_model, system_version, app_version)
+    return template(email, user_name, display_Name, password, team, language, uniqueKey, device_type, device_model, system_version, app_version)
 
 def LoginToServer():
     """Asks for username and login and returns JSON template with data for http request"""
@@ -88,19 +87,20 @@ def LoginToServer():
     return template(username, password, device_id, device_type, device_model, system_version, app_version)
 
 """Data Templates"""
-def MakeDataFrame(accuracy, altitude, height, id_, latitude, longitude, provider ,timestamp, width):
+def MakeDataFrame(accuracy, altitude, latitude, longitude, provider ,timestamp ,pulse ,temperature, humidity, pressure):
     """Generate JSON data frame of detector event"""
     frame = {
         "accuracy": accuracy,
         "altitude": altitude,
-        # "frame_content": pictureFrameContent,
-        "height": height,
-        "id": id_,
+        # "id": id_,
         "latitude": latitude,
         "longitude": longitude,
         "provider": provider,
         "timestamp": timestamp,
-        "width": width
+        "pulse_height": pulse,
+        "temperature": temperature,
+        "humidity": humidity,
+        "pressure": pressure
     }
     return frame
 
@@ -191,13 +191,18 @@ if config == False:
     registerResult = registerRequest(registrationTemplate)
     if errors(registerResult[0], registerResult[2]) == False:
         configFile = open(configFileName,'w')
-        for element in registrationTemplate: 
-            del element['password']
+        del registrationTemplate['password'] 
         configFile.write(json.dumps(registrationTemplate))
         configFile.close
         config = IfConfigExist()
-    else:
-        exit
+    elif json.loads(registerResult[2])['message'] == "Registration failed. Reason: User with given username or email already exists.":
+        configFile = open(configFileName,'w')
+        del registrationTemplate['password']
+        configFile.write(json.dumps(registrationTemplate))
+        configFile.close
+        config = IfConfigExist()
+        print('Config file recreated!')
+
 else:
     file_ = open(configFileName).read()
     device_id = json.loads(file_)['device_id']
@@ -282,9 +287,8 @@ try:
 except:
     print("No device connected!")
     sys.exit() 
-# fname = input("Enter file name (eg. save_file.txt):")
+
 fname = "data.dat"
-# id = input("Enter device ID:")
 id = device_id
 print("Taking data ...")
 print("Press ctl+c to terminate process")
@@ -298,8 +302,6 @@ ComPort.bytesize = 8             # Number of data bits = 8
 ComPort.parity   = 'N'           # No parity
 ComPort.stopbits = 1    
 
-# file = open(fname, "w",0)
-
 counter = 0
 logging.basicConfig(level=logging.INFO)
 while True:
@@ -312,18 +314,18 @@ while True:
     #     file.write("### Device ID: "+str(id)+"\n")
     #     file.write("######################################################################\n")
     # file.write(str(datetime.now())+" "+data)
-    dataFrameTemplate = MakeDataFrame(1, 210.73, 0, counter, 50.0922, 19.9148, "ip", int(time.time()*1000), 0)  #DATA FRAME TO SEND
+    dataFrameTemplate = MakeDataFrame(1, 210.73, 50.0922, 19.9148, "manual", int(time.time()*1000), None, None, None, None)  #DATA FRAME TO SEND
     dataContent = dataTemplate([dataFrameTemplate], device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
-    counter +=1
     sendResult = sendRequest(dataContent, AuthenticationToken)
+    counter +=1
 
     # print(dataContent)
     if errors(loginResult[0], loginResult[2]) == False:
         pass
     else:
         exit
-
-    print(sendResult)
+        print(sendResult)
     
 ComPort.close()     
 file.close() 
+
