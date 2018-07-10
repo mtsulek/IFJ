@@ -17,8 +17,8 @@ from multiprocessing import Process
 import random
 import logging
 # LOCAL LIBS
-from JsonTemplates import *
-from Requests import *
+from DataTemplates import *
+from RequestTemplates import *
 
 # APPLICATION SETUP
 """Constant App parameters"""
