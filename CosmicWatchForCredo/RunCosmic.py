@@ -120,7 +120,7 @@ loginResult = loginRequest(loginTemplate)
 if errors(loginResult[0], loginResult[2]) == False:
     pass
 else:
-    exit
+    sys.exit()
 AuthenticationToken = json.loads(loginResult[2])['token']
 
 # Generate data json

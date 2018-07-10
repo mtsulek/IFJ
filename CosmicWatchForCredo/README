@@ -1,5 +1,13 @@
-This is prototype of Aplication for Credo Desktop Detektor.
+### This is the prototype of Credo Desktop Detektor Aplication.
 
 Required:
 	python 3.6+
 	python3-serial
+
+To do list: 
+	[] in case of no internet connection save data in local file
+	[] visualization of data
+		- 1 min
+		- 1 hour
+		- 1 day
+		- 1 week
