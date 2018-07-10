@@ -74,10 +74,10 @@ def InitiateCosmicWatch():
     team = input()
     print("language:")
     language = input()
-
+    
     template = JsonTemplate("Register")
-    uniqueKey = generateUniqueID(device_model, device_type, user_name)
-    return template(email, user_name, display_Name, password, team, language, uniqueKey, device_type, device_model, system_version, app_version)
+    device_id = generateUniqueID(device_model, device_type, user_name)
+    return template(email, user_name, display_Name, password, team, language, device_id, device_type, device_model, system_version, app_version)
 
 def LoginToServer():
     """Asks for username and login and returns JSON template with data for http request"""
@@ -95,23 +95,23 @@ if config == False:
     registrationTemplate = InitiateCosmicWatch()
     registerRequest = HttpRequest("https://api.credo.science", "Register")
     registerResult = registerRequest(registrationTemplate)
+    configFile = open(configFileName,'w')
+    device_id = registrationTemplate['device_id']
     if errors(registerResult[0], registerResult[2]) == False:
-        configFile = open(configFileName,'w')
         del registrationTemplate['password'] 
-        configFile.write(json.dumps(registrationTemplate))
+        configFile.write(json.dumps(registrationTemplate, indent=4))
         configFile.close
         config = IfConfigExist()
     elif json.loads(registerResult[2])['message'] == "Registration failed. Reason: User with given username or email already exists.":
-        configFile = open(configFileName,'w')
         del registrationTemplate['password']
-        configFile.write(json.dumps(registrationTemplate))
+        configFile.write(json.dumps(registrationTemplate, indent=4))
         configFile.close
         config = IfConfigExist()
         print('Config file recreated!')
-
 else:
     file_ = open(configFileName).read()
     device_id = json.loads(file_)['device_id']
+    file_.close
 
 # Loggin into server
 loginTemplate = LoginToServer()
