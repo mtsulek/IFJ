@@ -11,3 +11,7 @@ To do list:
 		* 1 hour
 		* 1 day
 		* 1 week
+
+
+"IF you are using Linux, you need to give permission to use your USB ports:
+	In terminal: sudo chmod 666 /dev/ttyUSB0"

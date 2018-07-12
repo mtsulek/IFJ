@@ -5,6 +5,7 @@ import platform
 import time
 import hashlib
 import random
+import eventlet
 # COSMIC WATCH LIBS
 import serial 
 import time
@@ -111,7 +112,7 @@ if config == False:
 else:
     file_ = open(configFileName).read()
     device_id = json.loads(file_)['device_id']
-    file_.close
+    # file_.close
 
 # Loggin into server
 loginTemplate = LoginToServer()
@@ -213,25 +214,26 @@ logging.basicConfig(level=logging.INFO)
 while True:
     data = ComPort.readline()    # Wait and read data 
     # if counter == 0:
-    #     file.write("######################################################################\n")
-    #     file.write("### Desktop Muon Detector \n")
-    #     file.write("### Questions? saxani@mit.edu \n")
     #     file.write("### Comp_time Counts Ardn_time[ms] Amplitude[mV] SiPM[mV] Deadtime[ms]\n")
     #     file.write("### Device ID: "+str(id)+"\n")
-    #     file.write("######################################################################\n")
     # file.write(str(datetime.now())+" "+data)
-    dataFrameTemplate = MakeDataFrame(1, 210.73, 50.0922, 19.9148, "manual", int(time.time()*1000), None, None, None, None)  #DATA FRAME TO SEND
-    dataContent = dataTemplate([dataFrameTemplate], device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
-    sendResult = sendRequest(dataContent, AuthenticationToken)
+    if counter != 0:
+        amplitude = (str(data).split(" ")[3])
+        dataFrameTemplate = MakeDataFrame(1, 210.73, 50.0922, 19.9148, "manual", int(time.time()*1000), amplitude, None, None, None)  #DATA FRAME TO SEND
+        dataContent = dataTemplate([dataFrameTemplate], device_id, device_type, device_model, system_version, app_version)   #WHOLE DATA TO SEND
+        # try:
+        #     sendResult = sendRequest(dataContent, AuthenticationToken)
+        # except:
+        #     pass
+            
+        if errors(loginResult[0], loginResult[2]) == False:
+            print(dataContent)
+            pass
+        else:
+            exit
+
     counter +=1
 
-    # print(dataContent)
-    if errors(loginResult[0], loginResult[2]) == False:
-        pass
-    else:
-        exit
-        print(sendResult)
-    
 ComPort.close()     
 file.close() 
 
