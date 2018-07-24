@@ -60,9 +60,25 @@ def JsonTemplate(whichTemplate):
         }
         return template_
 
+    def Ping(timestamp, delta_time, on_time, device_id, device_type, device_model, system_version, app_version):
+        """Return Ping JSON template"""
+        template_ = {
+            "timestamp": timestamp,
+            "delta_time": delta_time,
+            "on_time": on_time,
+            "device_id": device_id,
+            "device_type": device_type,
+            "device_model": device_model,
+            "system_version": system_version,
+            "app_version": app_version
+        }
+        return template_
+
     if whichTemplate == "Register":
         return Register
     elif whichTemplate == "Login":
         return Login
     elif whichTemplate == "Data":
         return SendData
+    elif whichTemplate == "Ping":
+        return Ping

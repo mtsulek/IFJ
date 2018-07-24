@@ -6,18 +6,27 @@ def HttpRequest(IP, whichRequest):
     def RegisterRequest(dataJSON):
         """Http Register request to server"""
         _adress = str(IP) + "/api/v2/user/register"
-        r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'})
+        r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'}, timeout=0.1)
         return(r.status_code, r.reason, r.content)
+        
     def LoginRequest(dataJSON):
         """Http Login request to server"""
         _adress = str(IP) + "/api/v2/user/login"
-        r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'})
+        r = requests.post(_adress, json=dataJSON, verify=False, headers={'Content-Type': 'application/json'}, timeout=0.1)
         return(r.status_code, r.reason, r.content)
+
     def SendDataRequest(dataJSON, token):
         """Http SendData request to server"""
         _adress = str(IP) + "/api/v2/detection"
         header = {'Content-Type': 'application/json', 'Authorization': 'Token {}'.format(token)}
-        r = requests.post(_adress, json=dataJSON, verify=False, headers=header)
+        r = requests.post(_adress, json=dataJSON, verify=False, headers=header, timeout=0.1)
+        return(r.status_code, r.reason, r.content)
+
+    def Ping(dataJSON, token):
+        """Http Ping request to server"""
+        _adress = str(IP) + "/api/v2/ping"
+        header = {'Content-Type': 'application/json', 'Authorization': 'Token {}'.format(token)}
+        r = requests.post(_adress, json=dataJSON, verify=False, headers=header, timeout=0.1)
         return(r.status_code, r.reason, r.content)
 
     if whichRequest == "Register":
@@ -26,3 +35,5 @@ def HttpRequest(IP, whichRequest):
         return LoginRequest
     elif whichRequest == "Data":
         return SendDataRequest
+    elif whichRequest == "Ping":
+        return Ping

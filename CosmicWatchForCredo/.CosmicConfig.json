@@ -4,9 +4,9 @@
     "display_name": "mtsulek",
     "team": "PK",
     "language": "pl",
-    "device_id": "CosmicWatchTest000000000000001",
-    "device_type": "PC_CosmicWatch",
-    "device_model": "Xiaomi Air 13",
-    "system_version": "Linux4.13.0-41-generic Ubuntu16.04",
-    "app_version": 0.01
+    "device_id": "27e790828cf7ff114009f95d67c20fbb1531240126",
+    "device_type": "CosmicWatch",
+    "device_model": "Desktop",
+    "system_version": "Linux4.13.0-45-generic Ubuntu16.04",
+    "app_version": 0.02
 }
