@@ -13,7 +13,7 @@ import signal
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Local libs
-from cosmicWatchByspenceraxani import CosmicWatch, sys
+from CosmicWatchByspenceraxani import CosmicWatch, sys
 from DataTemplates import *
 from RequestTemplates import HttpRequest
 
