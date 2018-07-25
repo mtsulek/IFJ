@@ -2,7 +2,6 @@ import serial
 import time
 import glob
 import sys
-import signal
 import json
 from datetime import datetime
 from multiprocessing import Process
@@ -25,7 +24,6 @@ def serial_ports():
             ports = glob.glob('/dev/tty.*')
         else:
             raise EnvironmentError('Unsupported platform')
-            sys.exit(0)
         result = []
         for port in ports:
             try:
@@ -65,7 +63,7 @@ class CosmicWatch():
             print("No device connected!")
             sys.exit() 
 
-        fname = "data.dat"
+        # fname = "data.dat"
         # id = device_id
         #ComPort = serial.Serial('/dev/cu.wchusbserialfa130') # open the COM Port
         self.ComPort = serial.Serial(port_list[int(ArduinoPort)-1]) # open the COM Port

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.6
 import json
 import getpass
 import os
@@ -6,13 +7,15 @@ import time
 import hashlib
 import random
 import multiprocessing
+import signal
+
 # INSECURE
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Local libs
-from cosmicWatchByspenceraxani import *
+from cosmicWatchByspenceraxani import CosmicWatch, sys
 from DataTemplates import *
-from RequestTemplates import *
+from RequestTemplates import HttpRequest
 
 
 # APPLICATION SETUP
@@ -100,7 +103,7 @@ class Task(object):
     def __call__(self):
         return [self.counter, self.whatToDo]
 
-class Process(multiprocessing.Process):
+class HttpProcess(multiprocessing.Process):
     """Multiprocess for sending data"""
     def __init__(self, task_queue, result_queue):
         multiprocessing.Process.__init__(self)
@@ -109,8 +112,7 @@ class Process(multiprocessing.Process):
         self.proc_name = self.name
     def run(self):
         q = True
-        next_task = None
-        answer = None
+        next_task, answer = None, None
         while True:
             if q == True:
                 next_task = self.task_queue.get()
@@ -167,7 +169,7 @@ class PingScheduler(multiprocessing.Process):
         self.task_queue = pingTasks
     def run(self):
         pingTemplate = JsonTemplate("Ping")
-        pingRequest = HttpRequest("https://api.credo.science", "Ping")
+        HttpRequest("https://api.credo.science", "Ping")
 
         while True:
             currentTime = int(time.time()*1000)
@@ -227,7 +229,7 @@ results = multiprocessing.Queue()
 
 # Start number of Processes
 num_processes = multiprocessing.cpu_count()
-processes = [ Process(tasks, results)
+processes = [ HttpProcess(tasks, results)
                 for i in range(num_processes) ]
 for w in processes:
     w.start()
@@ -253,5 +255,3 @@ while True:
         dataContent = dataTemplate([dataFrameTemplate], device_id, device_type, device_model, system_version, app_version) # whole data frame
         tasks.put(Task(counter, dataContent)) # put task with data to http requests queue
     counter +=1
-
-
