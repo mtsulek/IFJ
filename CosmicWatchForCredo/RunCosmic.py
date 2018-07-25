@@ -8,7 +8,7 @@ import hashlib
 import random
 import multiprocessing
 import signal
-
+import setproctitle
 # INSECURE
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -20,6 +20,7 @@ from RequestTemplates import HttpRequest
 
 # APPLICATION SETUP
 """Constant App parameters"""
+setproctitle.setproctitle("CosmicWatch for CREDO")
 configFileName = '.CosmicConfig.json'
 app_version = 0.10
 distro, version, kernel = platform.linux_distribution()
