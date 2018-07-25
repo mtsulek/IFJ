@@ -6,7 +6,9 @@ import time
 import hashlib
 import random
 import multiprocessing
-# Cosmic Watch libs
+# INSECURE
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Local libs
 from cosmicWatchByspenceraxani import *
 from DataTemplates import *
@@ -105,7 +107,6 @@ class Process(multiprocessing.Process):
         self.task_queue = task_queue
         self.result_queue = result_queue
         self.proc_name = self.name
-
     def run(self):
         q = True
         next_task = None
